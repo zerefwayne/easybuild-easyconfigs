@@ -1,16 +1,15 @@
-easyblock = 'EB_ROCmComponent'
+easyblock = 'ROCmComponent'
 
 name = 'rocTracer'
 version = '4.1.0'
 _rocm_version = '6.4.1'
-versionsuffix = f'-ROCm-{_rocm_version}'
 
 homepage = 'https://github.com/ROCm/roctracer'
 description = """ROCM cmake modules provides cmake modules for common build
 tasks needed for the ROCM software stack"""
 docurls = ['https://rocm.docs.amd.com/projects/roctracer/']
 
-toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
+toolchain = {'name': 'rocm-compilers', 'version': f'19.0.0-ROCm-{_rocm_version}'}
 
 github_account = 'ROCm'
 source_urls = [GITHUB_SOURCE]
@@ -23,10 +22,9 @@ builddependencies = [
     ('CppHeaderParser', '2.7.4'),
     ('Doxygen', '1.14.0'),
     ('Python', '3.13.1'),
-    ('ROCm-LLVM', f'{_rocm_version}'),
 ]
 dependencies = [
-    ('HIP', f'{_rocm_version}'),
+    ('HIP', _rocm_version)
 ]
 
 sanity_check_paths = {
