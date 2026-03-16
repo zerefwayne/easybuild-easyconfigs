@@ -1,0 +1,44 @@
+easyblock = 'ROCmComponent'
+
+name = 'composable_kernel'
+version = '1.0.0' # need to check
+_rocm_version = '6.4.1'
+
+homepage = 'https://github.com/ROCm/composable_kernel'
+description = """The Composable Kernel (CK) library provides a programming model for 
+writing performance-critical kernels for machine learning workloads across multiple 
+architectures (GPUs, CPUs, etc.). The CK library uses general purpose kernel languages, such as HIP C++."""
+docurls = ['https://rocm.docs.amd.com/projects/composable_kernel/en/latest/']
+
+toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
+
+github_account = 'ROCm'
+source_urls = [GITHUB_SOURCE]
+sources = [f'rocm-{_rocm_version}.tar.gz']
+
+local_gcc_version = '14.2.0'
+builddependencies = [
+    ('binutils', '2.42'),
+    ('CMake', '3.31.3'),
+    ('Python', '3.13.1'),
+]
+
+dependencies = [
+    ('HIP', _rocm_version),
+]
+
+configopts = '-DTYPES="fp32;fp16" '
+configopts += '-DL_KERNELS=OFF '
+configopts += '-DPP_KERNELS=OFF '
+
+
+# sanity_check_paths = {
+#     'files': ['lib/librocblas.so',
+#               'lib/cmake/rocblas/rocblas-config.cmake',
+#               'include/rocblas/rocblas.h'],
+#     'dirs': ['lib/cmake/rocblas',
+#              'share/doc/rocblas',
+#              'include/rocblas'],
+# }
+
+moduleclass = 'lib'
