@@ -1,7 +1,7 @@
 easyblock = 'ROCmComponent'
 
 name = 'composable_kernel'
-version = '1.0.0' # need to check
+version = '1.0.0' # TODO need to check what gets installed
 _rocm_version = '6.4.1'
 
 homepage = 'https://github.com/ROCm/composable_kernel'
@@ -15,8 +15,15 @@ toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
 github_account = 'ROCm'
 source_urls = [GITHUB_SOURCE]
 sources = [f'rocm-{_rocm_version}.tar.gz']
+patches = [
+    'composable_kernel-1.0.0_fix-hardcoded-paths.patch',
+]
+checksums = [
+    {'rocm-6.4.1.tar.gz': '6db4d36673da6506ca52625b3bd40c29d3b376d31a224fd221ffe60cf97564bf'},
+    {'composable_kernel-1.0.0_fix-hardcoded-paths.patch':
+     '7ff93775a3bafb9b30eee69c089413fab826b6ca4be265ec4b4af4b9fe6a75a6'},
+]
 
-local_gcc_version = '14.2.0'
 builddependencies = [
     ('binutils', '2.42'),
     ('CMake', '3.31.3'),
@@ -25,20 +32,16 @@ builddependencies = [
 
 dependencies = [
     ('HIP', _rocm_version),
+    ('git', '2.49.0'),
 ]
 
-configopts = '-DTYPES="fp32;fp16" '
-configopts += '-DL_KERNELS=OFF '
-configopts += '-DPP_KERNELS=OFF '
+configopts = "-DCMAKE_IGNORE_PATH='/opt/rocm' "
+configopts += "-DBUILD_TESTING=OFF "
 
+# Disable Legacy/Fallback Kernels
+configopts += "-DDL_KERNELS=OFF -DDPP_KERNELS=OFF "
 
-# sanity_check_paths = {
-#     'files': ['lib/librocblas.so',
-#               'lib/cmake/rocblas/rocblas-config.cmake',
-#               'include/rocblas/rocblas.h'],
-#     'dirs': ['lib/cmake/rocblas',
-#              'share/doc/rocblas',
-#              'include/rocblas'],
-# }
+# Disable Developer Bloat & Strict Warnings
+configopts += "-DBUILD_DEV=OFF -DCK_TIME_KERNEL=OFF -DCK_USE_CODEGEN=OFF -DUSE_BITINT_EXTENSION_INT4=OFF -DUSE_OPT_GFX11=OFF "
 
 moduleclass = 'lib'
