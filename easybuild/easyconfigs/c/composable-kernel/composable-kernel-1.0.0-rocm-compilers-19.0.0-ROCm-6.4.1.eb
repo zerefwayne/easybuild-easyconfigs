@@ -17,11 +17,14 @@ source_urls = [GITHUB_SOURCE]
 sources = [f'rocm-{_rocm_version}.tar.gz']
 patches = [
     'composable_kernel-1.0.0_fix-hardcoded-paths.patch',
+    'composable_kernel-1.0.0_disable-warnings.patch',
 ]
 checksums = [
     {'rocm-6.4.1.tar.gz': '6db4d36673da6506ca52625b3bd40c29d3b376d31a224fd221ffe60cf97564bf'},
     {'composable_kernel-1.0.0_fix-hardcoded-paths.patch':
      '7ff93775a3bafb9b30eee69c089413fab826b6ca4be265ec4b4af4b9fe6a75a6'},
+    {'composable_kernel-1.0.0_disable-warnings.patch':
+     '308803d673b86c7dd2050f59b235904eea9be3bf70a09dc4dc22de05b08a33a4'},
 ]
 
 builddependencies = [

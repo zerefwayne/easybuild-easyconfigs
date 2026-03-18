@@ -21,6 +21,7 @@ builddependencies = [
     ('binutils', '2.42'),
     ('CMake', '3.31.3'),
     ('HIP', _rocm_version),
+    ('composable_kernel', '1.0.0'), # TODO: Check version
 ]
 
 sanity_check_paths = {
