@@ -20,8 +20,11 @@ local_gcc_version = '14.2.0'
 builddependencies = [
     ('binutils', '2.42'),
     ('CMake', '3.31.3'),
+]
+
+dependencies = [
     ('HIP', _rocm_version),
-    ('composable_kernel', '1.0.0'), # TODO: Check version
+    ('composable_kernel', '1.1.0'),
 ]
 
 sanity_check_paths = {

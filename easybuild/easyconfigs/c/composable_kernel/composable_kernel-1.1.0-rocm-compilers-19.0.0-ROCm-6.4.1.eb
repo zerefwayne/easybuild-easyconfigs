@@ -1,12 +1,12 @@
 easyblock = 'ROCmComponent'
 
 name = 'composable_kernel'
-version = '1.0.0' # TODO need to check what gets installed
+version = '1.1.0'
 _rocm_version = '6.4.1'
 
 homepage = 'https://github.com/ROCm/composable_kernel'
-description = """The Composable Kernel (CK) library provides a programming model for 
-writing performance-critical kernels for machine learning workloads across multiple 
+description = """The Composable Kernel (CK) library provides a programming model for
+writing performance-critical kernels for machine learning workloads across multiple
 architectures (GPUs, CPUs, etc.). The CK library uses general purpose kernel languages, such as HIP C++."""
 docurls = ['https://rocm.docs.amd.com/projects/composable_kernel/en/latest/']
 
@@ -16,15 +16,15 @@ github_account = 'ROCm'
 source_urls = [GITHUB_SOURCE]
 sources = [f'rocm-{_rocm_version}.tar.gz']
 patches = [
-    'composable_kernel-1.0.0_fix-hardcoded-paths.patch',
-    'composable_kernel-1.0.0_disable-warnings.patch',
+    'composable_kernel-1.1.0_fix-hardcoded-paths.patch',
+    'composable_kernel-1.1.0_disable-warnings.patch',
 ]
 checksums = [
     {'rocm-6.4.1.tar.gz': '6db4d36673da6506ca52625b3bd40c29d3b376d31a224fd221ffe60cf97564bf'},
-    {'composable_kernel-1.0.0_fix-hardcoded-paths.patch':
-     '7ff93775a3bafb9b30eee69c089413fab826b6ca4be265ec4b4af4b9fe6a75a6'},
-    {'composable_kernel-1.0.0_disable-warnings.patch':
-     '308803d673b86c7dd2050f59b235904eea9be3bf70a09dc4dc22de05b08a33a4'},
+    {'composable_kernel-1.1.0_fix-hardcoded-paths.patch':
+     'f523ead386c4a392195a8a2f048dd6ae6b35d1c39343d1c880d646ea9f6dd776'},
+    {'composable_kernel-1.1.0_disable-warnings.patch':
+     '5f3d4b8d64374b850b73a00c12c30772b9b9abd1fbd12a8fa130e32165945956'},
 ]
 
 builddependencies = [
@@ -46,5 +46,20 @@ configopts += "-DDL_KERNELS=OFF -DDPP_KERNELS=OFF "
 
 # Disable Developer Bloat & Strict Warnings
 configopts += "-DBUILD_DEV=OFF -DCK_TIME_KERNEL=OFF -DCK_USE_CODEGEN=OFF -DUSE_BITINT_EXTENSION_INT4=OFF -DUSE_OPT_GFX11=OFF "
+
+sanity_check_paths = {
+    'dirs': [
+        'include/ck',
+        'include/ck_tile',
+        'lib/cmake'
+    ],
+    'files': [
+        'lib/libdevice_gemm_operations.a',
+        'lib/libdevice_conv_operations.a',
+        'lib/libdevice_contraction_operations.a',
+        'lib/libdevice_reduction_operations.a',
+        'lib/libutility.a'
+    ]
+}
 
 moduleclass = 'lib'
