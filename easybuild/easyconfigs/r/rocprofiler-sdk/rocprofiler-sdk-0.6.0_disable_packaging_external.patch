@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dccafa162..cd69e890c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -119,6 +122,8 @@ if(ROCPROFILER_BUILD_SAMPLES)
+     add_subdirectory(samples)
+ endif()
+ 
+-include(rocprofiler_config_packaging)
++# Disable packaging for EasyBuild, as bugged (CPack is imported too late)
++# and since we will not build Debian or RHEL packages.
++# include(rocprofiler_register_config_packaging)
+ 
+ rocprofiler_print_features()
