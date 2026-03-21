@@ -1,0 +1,43 @@
+easyblock = 'ROCmComponent'
+
+name = 'rocALUTION'
+version = '3.2.3'
+_rocm_version = '6.4.1'
+
+homepage = 'https://github.com/ROCm/rocALUTION'
+description = """rocALUTION is a sparse linear algebra library that can be used to explore fine-grained
+parallelism on top of the ROCm platform runtime and toolchains. Based on C++ and HIP, rocALUTION provides
+a portable, generic, and flexible design that allows seamless integration with other scientific software packages."""
+docurls = ['https://rocm.docs.amd.com/projects/rocALUTION/en/latest/']
+
+toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
+
+github_account = 'ROCm'
+source_urls = [GITHUB_SOURCE]
+sources = [f'rocm-{_rocm_version}.tar.gz']
+checksums = ['42e1478edd1a96a5b72dd71b8859529bbcb0cac2f4ad36b907fa2479e7cab629']
+
+builddependencies = [
+    ('binutils', '2.42'),
+    ('CMake', '3.31.3'),
+]
+
+dependencies = [
+    ('HIP', _rocm_version),
+    ('rocBLAS', '4.4.0'),
+    ('rocSPARSE', '3.4.0'),
+    ('rocPRIM', '3.4.0'),
+    ('rocRAND', '3.3.0'),
+]
+
+configopts = '-DUSE_HIPCXX=ON -DSUPPORT_OMP=ON -DSUPPORT_MPI=OFF -DCMAKE_MODULE_PATH=$EBROOTHIP/lib/cmake/hip '
+
+sanity_check_paths = {
+    'files': ['include/rocalution/rocalution.hpp',
+              f'lib/librocalution.{SHLIB_EXT}',
+              'lib/cmake/rocalution/rocalution-config.cmake'],
+    'dirs': ['share/doc/rocalution',
+             'include/rocalution'],
+}
+
+moduleclass = 'lib'
