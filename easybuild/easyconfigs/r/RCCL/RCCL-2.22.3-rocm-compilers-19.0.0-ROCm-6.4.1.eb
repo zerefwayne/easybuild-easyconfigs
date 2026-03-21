@@ -18,7 +18,7 @@ toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
 github_account = 'ROCm'
 source_urls = [GITHUB_SOURCE]
 sources = [f'rocm-{_rocm_version}.tar.gz']
-checksums = ['82b7e79e1bc3a1b16214a8758ed90d8cbf7f25f524169a85f64d070cf26742e9']
+patches = ['RCCL-2.22.3_fix-hardcoded_paths.patch']
 
 local_gcc_version = '14.2.0'
 builddependencies = [
@@ -26,7 +26,6 @@ builddependencies = [
     ('CMake', '3.31.3'),
     ('Python', '3.13.1'),
     ('HIPIFY', '19.0.0'),
-    ('ROCm-LLVM', '19.0.0', f'-ROCm-{_rocm_version}', ('GCCcore', local_gcc_version)),
 ]
 dependencies = [
     ('HIP', _rocm_version),
