@@ -1,0 +1,54 @@
+easyblock = 'ROCmComponent'
+
+name = 'miopen'
+version = '3.4.0'
+_rocm_version = '6.4.1'
+
+homepage = 'https://github.com/ROCm/MIOpen'
+description = "AMD's Machine Intelligence Library (highly optimized deep learning primitives)."
+docurls = ['https://rocm.docs.amd.com/projects/MIOpen/en/latest/']
+
+toolchain = {'name': 'rocm-compilers', 'version': f'19.0.0-ROCm-{_rocm_version}'}
+
+github_account = 'ROCm'
+source_urls = [GITHUB_SOURCE]
+sources = [f"rocm-{_rocm_version}.tar.gz"]
+checksums = ['3e9e8bc8d9dfb31b27e955ead3430825e88b7f1501d289ba023d34208916c724']
+
+builddependencies = [
+    ('binutils', '2.42'),
+    ('CMake', '3.31.3'),
+    ('rocm-cmake', '0.14.0'),
+]
+
+dependencies = [
+    ('SQLite', '3.47.2'),
+    ('Boost', '1.88.0'),
+    ('nlohmann_json', '3.12.0'),
+    ('half', '1.5.0'),
+    ('HIP', _rocm_version),
+    ('rocBLAS', '4.4.0'),
+    ('rocRAND', '3.3.0'),
+    ('hipBLAS', '3.3.0'),
+    ('hipBLASLt', '0.12.1'),
+    ('googletest', '1.17.0'),
+    ('zstd', '1.5.6'),
+    ('composable_kernel', '1.1.0'),
+]
+
+configopts = "-DMIOPEN_BACKEND=HIP -DMIOPEN_USE_MLIR=OFF "
+configopts += "-DMIOPEN_USE_COMPOSABLEKERNEL=ON -DMIOPEN_USE_HIPBLASLT=ON "
+configopts += "-DCMAKE_IGNORE_PATH='/opt/rocm' "
+
+configopts += "-DMIOPEN_ENABLE_AI_KERNEL_TUNING=OFF "
+configopts += "-DMIOPEN_ENABLE_AI_IMMED_MODE_FALLBACK=OFF "
+configopts += "-DMIOPEN_USE_ROCTRACER=OFF "
+
+sanity_check_paths = {
+    'dirs': ['include/miopen', 'lib/cmake/miopen'],
+    'files': [
+        ('lib/libMIOpen.so', 'lib64/libMIOpen.so')
+    ]
+}
+
+moduleclass = 'lib'
