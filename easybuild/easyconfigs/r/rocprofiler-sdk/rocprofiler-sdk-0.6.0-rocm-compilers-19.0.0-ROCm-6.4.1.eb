@@ -12,15 +12,17 @@ docurls = ['https://rocm.docs.amd.com/projects/rocprofiler-sdk/']
 
 toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
 
-github_account = 'ROCm'
-source_urls = [GITHUB_SOURCE]
-sources = [f"rocm-{_rocm_version}.tar.gz"]
+sources = [{
+    'git_config': {
+        'url': 'https://github.com/ROCm',
+        'repo_name': 'rocprofiler-sdk',
+        'tag': f'rocm-{_rocm_version}',
+        'recursive': True, # Downloads the missing external/filesystem code!
+    },
+    'filename': f'%(name)s-%(version)s-rocm-{_rocm_version}.tar.gz',
+}]
+
 patches = ['rocprofiler-sdk-0.6.0_disable_packaging_external.patch']
-checksums = [
-    {'rocm-6.4.1.tar.gz': '42fdc37614a8d79c56f98d5df125b35e9bf5bff5783fc2e9b9a0c309dea7a126'},
-    {'rocprofiler-sdk-0.6.0_disable_packaging_external.patch':
-     '4e27f128468f81a571c30d037b8ca5641c5553ebe1e2f7d158a47559ba9b79ac'},
-]
 
 builddependencies = [
     ('binutils', '2.42'),
@@ -34,13 +36,6 @@ dependencies = [
     ('rocprofiler-register', '0.4.0', '-ROCm-6.4.1', ('GCCcore', '14.2.0')),
     ('HIP', _rocm_version),
 ]
-
-# Explicitly tell CMake to ignore bundled dependencies just to be safe
-configopts = "-DROCPROFILER_BUILD_GLOG=OFF "
-configopts += "-DROCPROFILER_BUILD_FMT=OFF "
-configopts += "-DROCPROFILER_BUILD_TESTS=OFF "
-configopts += "-DROCPROFILER_BUILD_SAMPLES=OFF "
-configopts += "-DROCPROFILER_BUILD_ROCDECODE_TESTS=OFF "
 
 sanity_check_paths = {
     'dirs': [
