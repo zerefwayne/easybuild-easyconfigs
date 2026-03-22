@@ -1,0 +1,40 @@
+easyblock = 'ROCmComponent'
+
+name = 'rocprofiler'
+version = '2.0.0' 
+_rocm_version = '6.4.1'
+
+homepage = 'https://github.com/ROCm/rocprofiler'
+description = "Legacy Profiling with perf-counters and derived metrics for AMD ROCm."
+docurls = ['https://rocm.docs.amd.com/']
+
+toolchain = {'name': 'rocm-compilers', 'version': f'19.0.0-ROCm-{_rocm_version}'}
+
+github_account = 'ROCm'
+source_urls = [GITHUB_SOURCE]
+sources = [f"rocm-{_rocm_version}.tar.gz"]
+
+builddependencies = [
+    ('binutils', '2.42'),
+    ('CMake', '3.31.3'),
+]
+
+dependencies = [
+    ('HIP', _rocm_version),
+    ('numactl', '2.0.19'),
+    ('Python', '3.13.1'),
+    ('rocTracer', '4.1.0'),
+]
+
+configopts = "-DCMAKE_IGNORE_PATH='/opt/rocm' "
+configopts += "-DPROF_API_HEADER_PATH=$EBROOTROCTRACER/include/roctracer/ext "
+
+sanity_check_paths = {
+    'dirs': ['include/rocprofiler', 'lib/cmake/rocprofiler'],
+    'files': [
+        'bin/rocprofv2',
+        ('lib/librocprofiler64.so', 'lib64/librocprofiler64.so')
+    ]
+}
+
+moduleclass = 'tools'
