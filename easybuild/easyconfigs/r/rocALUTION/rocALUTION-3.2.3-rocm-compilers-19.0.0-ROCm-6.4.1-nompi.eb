@@ -15,7 +15,11 @@ toolchain = {'name': 'rocm-compilers', 'version': '19.0.0-ROCm-6.4.1'}
 github_account = 'ROCm'
 source_urls = [GITHUB_SOURCE]
 sources = [f'rocm-{_rocm_version}.tar.gz']
-checksums = ['42e1478edd1a96a5b72dd71b8859529bbcb0cac2f4ad36b907fa2479e7cab629']
+patches = ['rocALUTION-3.2.3_fix-ebroot-paths.patch']
+checksums = [
+    {'rocm-6.4.1.tar.gz': '42e1478edd1a96a5b72dd71b8859529bbcb0cac2f4ad36b907fa2479e7cab629'},
+    {'rocALUTION-3.2.3_fix-ebroot-paths.patch': '0e29d9418f6530b5e793d000b459b2b3a33440954c900a252226c3303dc61839'},
+]
 
 builddependencies = [
     ('binutils', '2.42'),

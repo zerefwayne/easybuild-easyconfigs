@@ -1,0 +1,22 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b577860..2911792 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -132,12 +132,12 @@ cmake_dependent_option(SUPPORT_HIP "Compile WITH HIP support" ON "USE_HIPCXX OR
+ # HIP related library dependencies
+ if(SUPPORT_HIP)
+   if( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
+-    find_package( hip REQUIRED CONFIG PATHS ${HIP_DIR} ${ROCM_PATH} /opt/rocm )
++    find_package( hip REQUIRED CONFIG PATHS $ENV{EBROOTHIP} ${HIP_DIR} ${ROCM_PATH} )
+   endif( )
+-  find_package(rocblas REQUIRED)
+-  find_package(rocsparse REQUIRED)
+-  find_package(rocprim REQUIRED)
+-  find_package(rocrand REQUIRED)
++  find_package(rocblas REQUIRED PATHS $ENV{EBROOTROCBLAS})
++  find_package(rocsparse REQUIRED PATHS $ENV{EBROOTROCSPARSE})
++  find_package(rocprim REQUIRED PATHS $ENV{EBROOTROCPRIM})
++  find_package(rocrand REQUIRED PATHS $ENV{EBROOTROCRAND})
+ endif()
+ 
+ if(BUILD_CODE_COVERAGE)
