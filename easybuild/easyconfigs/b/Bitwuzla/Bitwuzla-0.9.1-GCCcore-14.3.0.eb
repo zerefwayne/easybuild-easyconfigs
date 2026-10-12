@@ -1,0 +1,90 @@
+# Author: Aayush Joglekar (a.joglekar@vu.nl)
+
+easyblock = 'MesonNinja'
+
+name = 'Bitwuzla'
+version = '0.9.1'
+local_cadical_version = '2.1.2'
+local_symfpu_commit = '40bdec00e99f8ea1b96c3dac0a05eed11c541639'
+
+homepage = 'https://bitwuzla.github.io'
+description = """
+Bitwuzla is a Satisfiability Modulo Theories (SMT) solver for the theories of
+fixed-size bit-vectors, floating-point arithmetic, arrays, uninterpreted
+functions and their combinations. It supports quantifiers, incremental
+solving, unsat cores and interpolation, and provides C, C++ and Python APIs.
+"""
+
+toolchain = {'name': 'GCCcore', 'version': '14.3.0'}
+# upstream's release build is -O3 (Meson 'release' buildtype)
+toolchainopts = {'opt': True}
+
+github_account = 'bitwuzla'
+# CaDiCaL and SymFPU are pulled in as Meson subprojects with Bitwuzla's own
+# build files and patches (subprojects/packagefiles/); they are staged into
+# subprojects/packagecache/ so Meson doesn't have to download them during build
+sources = [
+    {
+        'source_urls': [GITHUB_LOWER_SOURCE],
+        'download_filename': '%(version)s.tar.gz',
+        'filename': SOURCELOWER_TAR_GZ,
+    },
+    {
+        'source_urls': ['https://github.com/arminbiere/cadical/archive'],
+        'download_filename': 'rel-%s.tar.gz' % local_cadical_version,
+        'filename': 'cadical-%s.tar.gz' % local_cadical_version,
+    },
+    {
+        'source_urls': ['https://github.com/martin-cs/symfpu/archive'],
+        'download_filename': '%s.tar.gz' % local_symfpu_commit,
+        'filename': 'symfpu-%s.tar.gz' % local_symfpu_commit[:7],
+    },
+]
+checksums = [
+    '42707f38900a20bb18108e426ba667560d1fd2ccce0d4f75aa60439b546488b4',  # bitwuzla-0.9.1.tar.gz
+    '292c2bb8d712d6d05fce3d3df63b922b8fa45e03974a79f7bae5bf68c284f131',  # cadical-2.1.2.tar.gz
+    'ba17877fbf0c851e113fddaab225152f1c0b2044429396b56b2f113832e36ce5',  # symfpu-40bdec0.tar.gz
+]
+
+builddependencies = [
+    ('binutils', '2.44'),
+    ('Meson', '1.8.2'),
+    ('Ninja', '1.13.0'),
+    ('pkgconf', '2.4.3'),
+]
+
+dependencies = [
+    ('GMP', '6.3.0'),
+    ('MPFR', '4.2.2'),
+]
+
+start_dir = '%(namelower)s-%(version)s'
+
+# stage the extracted CaDiCaL and SymFPU sources where Meson's wrap resolver looks for them
+local_pkgcache = '%(start_dir)s/subprojects/packagecache'
+preconfigopts = ' && '.join([
+    'mkdir -p %s' % local_pkgcache,
+    'mv %%(builddir)s/cadical-rel-%s %s/' % (local_cadical_version, local_pkgcache),
+    'mv %%(builddir)s/symfpu-%s %s/symfpu' % (local_symfpu_commit, local_pkgcache),
+]) + ' && '
+
+# shared lib so GMP/MPFR come from their modules (a static build links them statically);
+# testing must be set explicitly, since 'auto' only resolves for release/debug build types
+configopts = '--wrap-mode=nodownload -Ddefault_library=shared -Dtesting=enabled -Dunit_testing=disabled'
+
+# regression suite only; unit tests would need googletest
+runtest = 'meson'
+testopts = 'test --print-errorlogs --num-processes %(parallel)s'
+
+sanity_check_paths = {
+    'files': ['bin/bitwuzla', 'lib/libbitwuzla.%s' % SHLIB_EXT, 'lib/pkgconfig/bitwuzla.pc',
+              'include/bitwuzla/c/bitwuzla.h', 'include/bitwuzla/cpp/bitwuzla.h'],
+    'dirs': [],
+}
+
+sanity_check_commands = [
+    "bitwuzla --version | grep '^%(version)s'",
+    "echo '(declare-const x (_ BitVec 8))(assert (= (bvadd x #x01) #x00))(check-sat)' | bitwuzla | grep '^sat$'",
+]
+
+moduleclass = 'math'
